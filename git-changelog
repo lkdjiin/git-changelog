@@ -1,0 +1,87 @@
+#!/usr/bin/env ruby
+
+# Generate a Changelog file.
+#
+# This is suitable for a Changelog file in markdown or text format.
+# To generate a pretty Changelog, it's required to commit with
+# "Version x.y.z" when a new version is ready.
+#
+# Options
+#
+# --since=x
+#   This is the same as the one for git log.
+#
+# Examples
+#
+# git changelog > Changelog.markdown
+# git changelog --since=2013-07-01
+# git changelog --since=2.weeks
+
+# Get the --since option as a string.
+#
+# Returns a String, either "" or "--since=X"
+def get_since
+  if ARGV.size == 1 && ARGV[0].start_with?("--since=")
+    since = ARGV[0].dup
+  else
+    ""
+  end
+end
+
+# Get the output of `git log`.
+#
+# Returns a multilines String.
+def get_log
+  log = `git log --pretty=format:"* %ad %s%n%b" --date=short #{get_since}`
+  log.gsub /^$\n/, ''
+end
+
+# Indent a string, to be part of the previous list element.
+#
+# str - A String to indent.
+#
+# Examples
+#
+#   indent "foo" # => "  foo"
+#
+# Returns indented String version of str.
+def indent str
+  '  ' + str
+end
+
+# Make this a title.
+#
+# Examples
+#
+#   titleize "Version 1.0"
+#   # => "\nVersion 1.0\n==========="
+#
+# str - A String to titleize.
+#
+# Returns a titleized String version of str.
+def titleize str
+  str = str[2..-1]
+  str = "\n" + str + "\n" + "=" * str.size
+end
+
+# Returns true if String str is a commit body.
+def commit_body? str
+  not str.start_with? '*'
+end
+
+# Returns true if String str is a «Version» commit.
+def title? str
+  /\* .{10} Version/ =~ str
+end
+
+puts "This changelog is auto-generated using git-changelog."
+puts "See https://github.com/lkdjiin/git-changelog for more information."
+puts
+
+# Format the log output suitable for a changelog file.
+get_log.split("\n").each do |str|
+  str = indent str if commit_body? str
+  str = titleize str if title? str
+  puts str
+end
+
