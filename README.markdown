@@ -5,8 +5,9 @@ Description
 -----------
 Git-changelog is a Ruby script that extends git with a `changelog` command.
 This is usefull to automate changelog files production.
-Git-changelog generates a markdown file. If you don't use markdown it's
-ok as markdown is a human readable text file format.
+Git-changelog outputs in markdown or html format.
+If you want to generate a simple text file and don't use markdown it's
+ok too, as markdown is a human readable text file format.
 
 Install
 -------------------------
@@ -28,6 +29,14 @@ the one for `git log` command. Examples:
 
     git changelog --since=2013-07-01
     git changelog --since=10.days
+
+To output in Html:
+
+    git changelog --html
+
+All the above combined:
+
+    git changelog --html --since=2013-05-27 > changelog.html
 
 Contributing
 -------------------------
