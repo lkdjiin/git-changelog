@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
 
-# Generate a Changelog file.
+# Generate a changelog file.
 #
-# This is suitable for a Changelog file in markdown or text format.
-# To generate a pretty Changelog, it's required to commit with
+# This is suitable for a changelog file in markdown/text or html format.
+# To generate a pretty changelog, it's required to commit with
 # "Version x.y.z" when a new version is ready.
 #
 # Options
@@ -11,20 +11,29 @@
 # --since=x
 #   This is the same as the one for git log.
 #
+# --html
+#   Generate changelog in html.
+#
 # Examples
 #
 # git changelog > Changelog.markdown
+# git changelog --html > Changelog.html
 # git changelog --since=2013-07-01
 # git changelog --since=2.weeks
+# git changelog --since=2.weeks --html
 
-# Get the --since option as a string.
+# Parse command line options.
 #
-# Returns a String, either "" or "--since=X"
-def get_since
-  if ARGV.size == 1 && ARGV[0].start_with?("--since=")
-    since = ARGV[0].dup
-  else
-    ""
+# Returns nothing.
+def init_options
+  @since = ""
+  @format = :markdown
+  ARGV.each do |arg|
+    if arg.start_with?("--since=")
+      @since = arg.dup
+    elsif arg == "--html"
+      @format = :html
+    end
   end
 end
 
@@ -32,8 +41,12 @@ end
 #
 # Returns a multilines String.
 def get_log
-  log = `git log --pretty=format:"* %ad %s%n%b" --date=short #{get_since}`
-  log.gsub /^$\n/, ''
+  if @format == :markdown
+    log = `git log --pretty=format:"* %ad %s%n%b" --date=short #{@since}`
+    log.gsub /^$\n/, ''
+  else
+    `git log --pretty=format:"*<li>%ad %s%n%b</li>" --date=short #{@since}`
+  end
 end
 
 # Indent a string, to be part of the previous list element.
@@ -46,7 +59,15 @@ end
 #
 # Returns indented String version of str.
 def indent str
-  '  ' + str
+  if @format == :markdown
+    '  ' + str
+  else
+    if str.end_with?("</li>")
+      str
+    else
+    "<br />" + str
+    end
+  end
 end
 
 # Make this a title.
@@ -60,8 +81,12 @@ end
 #
 # Returns a titleized String version of str.
 def titleize str
-  str = str[2..-1]
-  str = "\n" + str + "\n" + "=" * str.size
+  if @format == :markdown
+    str = str[2..-1]
+    str = "\n" + str + "\n" + "=" * str.size
+  else
+    str[1..4] + "<h2>" + str[5..-1] + "</h2>"
+  end
 end
 
 # Returns true if String str is a commit body.
@@ -71,17 +96,28 @@ end
 
 # Returns true if String str is a «Version» commit.
 def title? str
-  /\* .{10} Version/ =~ str
+  /\*( |<li>).{10} Version/ =~ str
 end
 
+init_options
+
+puts "<p>" if @format == :html
 puts "This changelog is auto-generated using git-changelog."
 puts "See https://github.com/lkdjiin/git-changelog for more information."
+puts "</p>" if @format == :html
 puts
+puts "<ul>" if @format == :html
 
-# Format the log output suitable for a changelog file.
+# Format the log output.
 get_log.split("\n").each do |str|
-  str = indent str if commit_body? str
-  str = titleize str if title? str
+  if commit_body? str
+    str = indent str
+  elsif title? str
+    str = titleize str
+  else
+    str = str[1..-1] if @format == :html
+  end
   puts str
 end
 
+puts "</ul>" if @format == :html
