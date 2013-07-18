@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+require 'cgi'
+
 # Generate a changelog file.
 #
 # This is suitable for a changelog file in markdown/text or html format.
@@ -60,7 +62,7 @@ end
 # Returns indented String version of str.
 def indent str
   if @format == :markdown
-    '  ' + str
+    '  ' + CGI.escapeHTML(str)
   else
     if str.end_with?("</li>")
       str
@@ -83,9 +85,9 @@ end
 def titleize str
   if @format == :markdown
     str = str[2..-1]
-    str = "\n" + str + "\n" + "=" * str.size
+    str = "\n" + CGI.escapeHTML(str) + "\n" + "=" * str.size
   else
-    str[1..4] + "<h2>" + str[5..-1] + "</h2>"
+    str[1..4] + "<h2>" + CGI.escapeHTML(str[5..-1]) + "</h2>"
   end
 end
 
@@ -116,6 +118,7 @@ get_log.split("\n").each do |str|
     str = titleize str
   else
     str = str[1..-1] if @format == :html
+    str = CGI.escapeHTML(str) if @format == :markdown
   end
   puts str
 end
