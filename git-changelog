@@ -44,10 +44,10 @@ end
 # Returns a multilines String.
 def get_log
   if @format == :markdown
-    log = `git log --pretty=format:"* %ad %s  %n%b" --date=short #{@since}`
+    log = `git log --pretty=format:"* %ad %s  %n%b (%an <[%ae](mailto:%ae)>)" --date=short #{@since}`
     log.gsub /^$\n/, ''
   else
-    `git log --pretty=format:"*<li>%ad %s%n%b</li>" --date=short #{@since}`
+    `git log --pretty=format:"*<li>%ad %s%n%b (%an <i><a href='mailto:%ae'>%ae</a></i>)</li>" --date=short #{@since}`
   end
 end
 
