@@ -16,6 +16,9 @@ require 'cgi'
 # --html
 #   Generate changelog in html.
 #
+# --author
+#   Add commit author to changelog.
+#
 # Examples
 #
 # git changelog > Changelog.markdown
@@ -23,6 +26,8 @@ require 'cgi'
 # git changelog --since=2013-07-01
 # git changelog --since=2.weeks
 # git changelog --since=2.weeks --html
+# git changelog --author
+# git changelog --author --html
 
 # Parse command line options.
 #
@@ -35,6 +40,8 @@ def init_options
       @since = arg.dup
     elsif arg == "--html"
       @format = :html
+    elsif arg == "--author"
+      @author = :author
     end
   end
 end
@@ -44,10 +51,18 @@ end
 # Returns a multilines String.
 def get_log
   if @format == :markdown
-    log = `git log --pretty=format:"* %ad %s  %n%b (%an <[%ae](mailto:%ae)>)" --date=short #{@since}`
+    if @author == :author
+      log = `git log --pretty=format:"* %ad %s  %n%b (%an <[%ae](mailto:%ae)>)" --date=short #{@since}`
+    else
+      log = `git log --pretty=format:"* %ad %s  %n%b" --date=short #{@since}`
+    end
     log.gsub /^$\n/, ''
   else
-    `git log --pretty=format:"*<li>%ad %s%n%b (%an <i><a href='mailto:%ae'>%ae</a></i>)</li>" --date=short #{@since}`
+    if @author == :author
+      `git log --pretty=format:"<li>%ad %s%n%b (%an <i><a href='mailto:%ae'>%ae</a></i>)</li>" --date=short #{@since}`
+    else
+      `git log --pretty=format:"<li>%ad %s%n%b</li>" --date=short #{@since}`
+    end
   end
 end
 
