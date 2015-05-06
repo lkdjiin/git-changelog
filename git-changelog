@@ -16,6 +16,9 @@ require 'cgi'
 # --html
 #   Generate changelog in html.
 #
+# --ghCommit=username/repo
+#   Generates a link to the commit message from github
+#
 # Examples
 #
 # git changelog > Changelog.markdown
@@ -23,6 +26,7 @@ require 'cgi'
 # git changelog --since=2013-07-01
 # git changelog --since=2.weeks
 # git changelog --since=2.weeks --html
+# git changelog --ghCommit=johnnyEvo/git-changelog
 
 # Parse command line options.
 #
@@ -30,11 +34,14 @@ require 'cgi'
 def init_options
   @since = ""
   @format = :markdown
+  @ghCommit = ""
   ARGV.each do |arg|
     if arg.start_with?("--since=")
       @since = arg.dup
     elsif arg == "--html"
       @format = :html
+    elsif arg.start_with?("--gh-commit=")
+      @ghCommit = arg[12..-1]
     end
   end
 end
@@ -44,10 +51,19 @@ end
 # Returns a multilines String.
 def get_log
   if @format == :markdown
-    log = `git log --pretty=format:"* %ad %s  %n%b" --date=short #{@since}`
-    log.gsub /^$\n/, ''
+    if @ghCommit == ''
+      log = `git log --pretty=format:"* %ad %s  %n%b" --date=short #{@since}`
+      log.gsub /^$\n/, ''
+    else
+      log = `git log --pretty=format:"* [[%t](http://github.com/#{@ghCommit}/commit/%H)] %ad %s  %n%b" --date=short #{@since}`
+      log.gsub /^$\n/, ''
+    end
   else
-    `git log --pretty=format:"*<li>%ad %s%n%b</li>" --date=short #{@since}`
+    if @ghCommit == ''
+      `git log --pretty=format:"*<li>%ad %s%n%b</li>" --date=short #{@since}`
+    else
+      `git log --pretty=format:"*<li><i><a href="http://github.com/#{@ghCommit}/commit/%H">%t</a></i> %ad %s%n%b</li>" --date=short #{@since}`
+    end
   end
 end
 
