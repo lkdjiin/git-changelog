@@ -1,0 +1,105 @@
+'\" t
+.\"     Title: git-changelog
+.\"    Author: [see the "AUTHORS" section]
+.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
+.\"      Date: 12/17/2020
+.\"    Manual: git-changelog
+.\"    Source: git-changelog 0.2.2
+.\"  Language: English
+.\"
+.TH "GIT\-CHANGELOG" "1" "12/17/2020" "git\-changelog 0\&.2\&.2" "git\-changelog"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+git-changelog \- Extract and output a changelog in markdown or html format
+.SH "SYNOPSIS"
+.sp
+\fIgit changelog\fR [\-\-since] [\-\-html]
+.SH "DESCRIPTION"
+.sp
+Automate ChangeLog files production in markdown or gtml foramt\&.
+.SH "OPTIONS"
+.PP
+\-\-since
+.RS 4
+This is the same option as the one for
+\fBgit\- log\fR(1) command\&.
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+git changelog \-\-since=2013\-07\-01
+git changelog \-\-since=10\&.days
+.fi
+.if n \{\
+.RE
+.\}
+.RE
+.PP
+\-\-html
+.RS 4
+Output the changelog in html formal\&.
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+git changelog \-\-html
+.fi
+.if n \{\
+.RE
+.\}
+.RE
+.SH "OUTPUT"
+.sp
+git\-changelog output is done on the console\&. You can redirect that output into a file:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+git changelog \-\-html \-\-since=2020\-08\-24 > ChangeLog
+.fi
+.if n \{\
+.RE
+.\}
+.SH "HELP"
+.sp
+After installation, run
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+git help changelog
+.fi
+.if n \{\
+.RE
+.\}
+.SH "AUTHORS"
+.sp
+This man page was written by Dominique Michel in 2020\&. git\-changelog author: Xavier Nayrac
+.SH "LICENSE"
+.sp
+MIT
+.SH "GIT"
+.sp
+Extends the \fBgit\fR(1) suite\&.

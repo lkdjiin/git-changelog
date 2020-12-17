@@ -1,0 +1,67 @@
+git-changelog(1)
+================
+:doctype: manpage
+:man source:   git-changelog
+:man version:  0.2.2
+:man manual:   git-changelog
+
+NAME
+----
+
+git-changelog - Extract and output a changelog in markdown or html format
+
+
+SYNOPSIS
+--------
+
+_git changelog_ [--since] [--html]
+
+
+DESCRIPTION
+-----------
+
+Automate ChangeLog files production in markdown or gtml foramt.
+
+OPTIONS
+-------
+--since::
+This is the same option as the one for *git- log*(1) command.
++
+----
+git changelog --since=2013-07-01
+git changelog --since=10.days
+----
+
+--html::
+Output the changelog in html formal.
++
+----
+git changelog --html
+----
+
+OUTPUT
+------
+git-changelog output is done on the console. You can redirect that output into a file:
+----
+git changelog --html --since=2020-08-24 > ChangeLog
+----
+
+HELP
+----
+After installation, run
+----
+git help changelog
+----
+
+AUTHORS
+-------
+This man page was written by Dominique Michel in 2020.
+git-changelog author: Xavier Nayrac
+
+LICENSE
+-------
+MIT
+
+GIT
+---
+Extends the *git*(1) suite.

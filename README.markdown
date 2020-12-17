@@ -11,7 +11,12 @@ ok too, as markdown is a human readable text file format.
 
 Install
 -------------------------
-Put the file `git-changelog` somewhere in your PATH.
+Put the file `git-changelog` in your PATH or,
+if you want the man page and its integration into `git help`, run
+
+    make
+
+to get the instructions. Depending on the given prefix, you may need to be root.
 
 Usage
 --------------------------
@@ -38,14 +43,21 @@ All the above combined:
 
     git changelog --html --since=2013-05-27 > changelog.html
 
+To get some help:
+
+    git help changelog
+
 Contributing
 -------------------------
 
 1. Fork it
 2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+2. Hack, hack, hack
+3. Update the ascii file with you changes
+4. Run `make man` (need asciidoc)
+5. Commit your changes (`git commit -am 'Add some feature'`)
+6. Push to the branch (`git push origin my-new-feature`)
+7. Create new Pull Request
 
 
 License
